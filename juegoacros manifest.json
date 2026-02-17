@@ -1,0 +1,15 @@
+{
+  "name": "Reto Agente Educativo",
+  "short_name": "RetoAgente",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#202028",
+  "theme_color": "#202028",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/566/566458.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
