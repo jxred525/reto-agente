@@ -528,6 +528,14 @@
             }
         }
     </script>
+    <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(() => console.log("¡App lista para usar offline!"))
+      .catch((err) => console.log("Fallo el registro", err));
+  }
+</script>
 </body>
 
 </html>
+
