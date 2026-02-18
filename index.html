@@ -2,540 +2,620 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Reto: Agente Educativo 8-Bit</title>
-    
-    <!-- Configuración PWA -->
-    <meta name="theme-color" content="#202028">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" id="juegoacros manifefst.json">
-
-    <!-- Librerías -->
+    <meta name="theme-color" content="#2c3e50">
+    
+    <title>Reto Agente PE: Coach Pro</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
 
     <style>
-        body {
-            font-family: 'Press Start 2P', cursive;
-            background-color: #202028;
-            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-            background-size: 20px 20px;
-            touch-action: manipulation;
+        :root {
+            --track-red: #c0392b;
+            --time-green: #2ecc71;
+            --time-yellow: #f1c40f;
+            --time-red: #e74c3c;
+            --gold: #FFD700;
+            --silver: #C0C0C0;
+            --bronze: #CD7F32;
+        }
+        
+        * {
             user-select: none;
-            overflow-x: hidden;
-            overflow-y: auto;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
         }
 
-        /* Estilos Pixel Art */
-        .pixel-box { background: #fff; border: 4px solid #000; box-shadow: 8px 8px 0px rgba(0,0,0,0.5); }
-        .pixel-btn { border: 4px solid #000; box-shadow: 4px 4px 0px #000; transition: transform 0.1s, box-shadow 0.1s; cursor: pointer; }
-        .pixel-btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px #000; }
-        .pixel-input { font-family: 'Press Start 2P', cursive; border: 4px solid #000; outline: none; text-transform: uppercase; }
-        
-        .crt-overlay { background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); background-size: 100% 2px, 3px 100%; pointer-events: none; position: fixed; inset: 0; z-index: 50; }
-        
-        /* Animaciones Decorativas */
-        .pixel-svg { shape-rendering: crispEdges; }
-        .float-anim { animation: float 6s ease-in-out infinite; }
-        .float-anim-delayed { animation: float 7s ease-in-out infinite; animation-delay: 1s; }
-        .float-anim-slow { animation: float 8s ease-in-out infinite; animation-delay: 2s; }
-        
-        @keyframes float { 0% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-15px) rotate(5deg); } 100% { transform: translateY(0px) rotate(0deg); } }
-        
-        /* Suelo */
-        .floor-decoration { background-image: linear-gradient(90deg, #4ade80 25%, #22c55e 25%, #22c55e 50%, #4ade80 50%, #4ade80 75%, #22c55e 75%); background-size: 40px 40px; box-shadow: 0 -4px 0 #000; }
+        body { 
+            font-family: 'Press Start 2P', cursive; 
+            background-color: #2c3e50; 
+            color: white; 
+            overflow: hidden; 
+            background-image: linear-gradient(rgba(0,0,0,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.3) 1px, transparent 1px);
+            background-size: 20px 20px;
+            height: 100vh; width: 100vw; margin: 0;
+        }
 
-        .loader { width: 48px; height: 48px; border: 5px solid #FFF; border-bottom-color: #FF3D00; border-radius: 50%; display: inline-block; box-sizing: border-box; animation: rotation 1s linear infinite; }
-        @keyframes rotation { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .readable-font { font-family: 'Roboto Mono', monospace; }
+
+        .pixel-box { background: #fff; border: 4px solid #000; box-shadow: 6px 6px 0px rgba(0,0,0,0.5); color: #000; }
+        .pixel-btn { border: 4px solid #000; box-shadow: 4px 4px 0px #000; transition: all 0.1s; cursor: pointer; color: white; text-transform: uppercase; }
+        .pixel-btn:active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px #000; }
+        
+        .btn-red { background-color: #e74c3c; } 
+        .btn-blue { background-color: #3498db; }
+        .btn-yellow { background-color: #f1c40f; color: #000; } 
+        .btn-green { background-color: #2ecc71; }
+
+        .track-bg {
+            background: var(--track-red);
+            border-top: 6px solid white; border-bottom: 6px solid white;
+            position: relative;
+        }
+
+        /* Barras de Tiempo */
+        #timer-container, .player-timer-container { width: 100%; height: 100%; background: #2c3e50; border: 3px solid #fff; overflow: hidden; position: relative; border-radius: 8px; }
+        #timer-bar-fill, #player-timer-fill { height: 100%; width: 100%; transition: width 1s linear, background-color 0.3s; background-color: var(--time-green); }
+        
+        .timer-high { background-color: var(--time-green) !important; }
+        .timer-med { background-color: var(--time-yellow) !important; }
+        .timer-low { background-color: var(--time-red) !important; animation: blink 0.5s infinite; }
+        
+        @keyframes blink { 50% { opacity: 0.7; } }
+
+        .big-code { 
+            font-size: 3rem; 
+            letter-spacing: 0.2rem; 
+            color: #f1c40f; 
+            text-shadow: 4px 4px 0px #000; 
+            word-break: break-all;
+        }
+        @media (min-width: 768px) { .big-code { font-size: 5rem; letter-spacing: 0.5rem; } }
+
+        .crt-overlay { 
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.05) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02)); 
+            background-size: 100% 2px, 3px 100%; 
+            pointer-events: none; position: fixed; inset: 0; z-index: 600; 
+        }
+
+        .player-badge { 
+            background: #fff; color: #000; padding: 6px 12px; 
+            border: 2px solid #000; font-size: 10px; margin: 4px; 
+            display: inline-block; 
+            box-shadow: 2px 2px 0px #000;
+        }
+        
+        .back-btn {
+            position: absolute; top: 10px; left: 10px;
+            background: #e74c3c; padding: 8px 12px;
+            font-size: 8px; border: 2px solid #000;
+            cursor: pointer; z-index: 50; color: white;
+            box-shadow: 2px 2px 0px #000;
+        }
+        .back-btn:active { transform: translate(1px, 1px); box-shadow: none; }
+
+        /* PODIO */
+        .podium-bar {
+            width: 60px; 
+            border: 3px solid #000;
+            display: flex; flex-direction: column; justify-content: flex-end; align-items: center;
+            position: relative;
+            transform-origin: bottom;
+            animation: growUp 1s ease-out forwards;
+        }
+        @media (min-width: 768px) { .podium-bar { width: 100px; border: 4px solid #000; } }
+
+        @keyframes growUp { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+        
+        .podium-gold { background: var(--gold); height: 180px; z-index: 10; order: 2; box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+        .podium-silver { background: var(--silver); height: 130px; z-index: 5; order: 1; }
+        .podium-bronze { background: var(--bronze); height: 90px; z-index: 5; order: 3; }
+
+        .winner-name { 
+            position: absolute; top: -50px; 
+            width: 150px; text-align: center; 
+            font-size: 8px; color: #fff; text-shadow: 2px 2px 0 #000; 
+            left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.7); padding: 4px; border-radius: 4px;
+        }
+        
+        .confetti {
+            position: fixed; width: 10px; height: 10px;
+            background-color: #f0f;
+            animation: fall linear forwards;
+            z-index: 500;
+        }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+
+        .honor-list-item {
+            background: rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding: 8px;
+            display: flex; justify-content: space-between;
+            font-size: 10px;
+            font-family: 'Roboto Mono', monospace;
+        }
     </style>
 </head>
-<body class="text-gray-900 flex items-center justify-center min-h-screen relative py-8 px-4">
-    
+<body class="flex flex-col items-center justify-center min-h-screen">
     <div class="crt-overlay"></div>
 
-    <!-- Control Único de Audio -->
-    <button id="audio-btn" class="absolute top-4 right-4 z-50 text-white text-[10px] bg-black/50 p-2 border border-white hover:bg-black" onclick="toggleAudio()">
-        <i class="fas fa-volume-up text-green-400"></i> SONIDO: ON
-    </button>
-
-    <!-- --- DECORACIONES DE FONDO (Pixel Art) --- -->
-    <!-- Se ocultan en móviles pequeños (hidden) y se muestran en tablet/PC (md:block) -->
-    <div class="absolute inset-0 overflow-hidden pointer-events-none z-0 hidden md:block">
-        <!-- Balón de Fútbol -->
-        <div class="absolute top-10 left-10 w-16 h-16 lg:w-24 lg:h-24 opacity-20 float-anim">
-            <svg viewBox="0 0 16 16" class="pixel-svg w-full h-full" fill="white">
-                <path d="M6 0h4v1h2v1h1v2h1v4h-1v2h-1v1h-2v1h-4v-1h-2v-1h-1v-2h-1v-4h1v-2h1v-1h2v-1z" fill="#fff"/>
-                <path d="M7 2h2v2h2v2h-2v2h-2v-2h-2v-2h2v-2z" fill="#000"/> 
-                <path d="M2 6h2v4h-2z M12 6h2v4h-2z" fill="#000"/> 
-            </svg>
-        </div>
-
-        <!-- Libro -->
-        <div class="absolute top-20 right-16 w-14 h-14 lg:w-20 lg:h-20 opacity-20 float-anim-delayed">
-            <svg viewBox="0 0 16 16" class="pixel-svg w-full h-full" fill="#60a5fa">
-                <rect x="2" y="2" width="10" height="12" fill="#3b82f6"/>
-                <rect x="4" y="4" width="6" height="1" fill="white"/>
-                <rect x="4" y="6" width="6" height="1" fill="white"/>
-                <rect x="4" y="8" width="6" height="1" fill="white"/>
-                <rect x="12" y="2" width="2" height="12" fill="#1d4ed8"/>
-            </svg>
-        </div>
-
-        <!-- Canasta -->
-        <div class="absolute bottom-32 left-16 w-20 h-20 lg:w-28 lg:h-28 opacity-10 float-anim-slow">
-            <svg viewBox="0 0 16 16" class="pixel-svg w-full h-full" fill="#f97316">
-                <path d="M6 0h4v1h2v1h1v2h1v4h-1v2h-1v1h-2v1h-4v-1h-2v-1h-1v-2h-1v-4h1v-2h1v-1h2v-1z" fill="#ea580c"/>
-                <path d="M2 8h12M8 2v12M4 3l8 10M12 3l-8 10" stroke="#7c2d12" stroke-width="1" shape-rendering="crispEdges"/>
-            </svg>
-        </div>
-
-        <!-- Silbato -->
-        <div class="absolute bottom-24 right-10 w-12 h-12 lg:w-16 lg:h-16 opacity-20 float-anim">
-            <svg viewBox="0 0 16 16" class="pixel-svg w-full h-full" fill="#cbd5e1">
-                <path d="M2 4h8v6h-4v2h-4v-8z M10 6h4v2h-4z" fill="#94a3b8"/>
-                <path d="M4 2h2v2h-2z" fill="#475569"/> 
-            </svg>
+    <!-- PANTALLA CARGA -->
+    <div id="status-screen" class="w-full max-w-sm pixel-box p-8 text-center z-10">
+        <div id="loader" class="flex flex-col items-center gap-6">
+            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-black"></div>
+            <p class="text-[8px]">INICIANDO SISTEMA...</p>
         </div>
     </div>
-    
-    <div class="absolute bottom-0 w-full h-4 md:h-8 floor-decoration z-0"></div>
 
-    <!-- CONTENEDOR PRINCIPAL RESPONSIVE -->
-    <!-- Móvil: max-w-md / Tablet: max-w-2xl / PC: max-w-4xl -->
-    <div id="app" class="w-full max-w-md md:max-w-2xl lg:max-w-4xl relative z-10 transition-all duration-300">
+    <!-- SELECCIÓN DE ROL -->
+    <div id="role-screen" class="hidden w-full max-w-sm pixel-box p-8 text-center z-10 relative">
+        <h1 class="text-[12px] md:text-[14px] mb-8 text-blue-900 uppercase leading-relaxed">RETO: EVALUACIÓN NACIONAL</h1>
+        <button onclick="window.showInstructions('host')" class="w-full py-4 mb-4 bg-blue-600 text-[10px] md:text-[12px] pixel-btn">COACH (DOCENTE)</button>
+        <button onclick="window.showInstructions('player')" class="w-full py-4 bg-green-600 text-[10px] md:text-[12px] pixel-btn">ATLETA (ALUMNO)</button>
+        <div class="mt-6">
+            <button onclick="window.toggleMusic()" id="music-btn" class="text-[8px] text-gray-400 underline uppercase pixel-btn bg-gray-800 p-2 border-2 border-white hover:bg-gray-700">🎵 ACTIVAR MÚSICA</button>
+        </div>
+    </div>
+
+    <!-- INSTRUCCIONES -->
+    <div id="instruction-screen" class="hidden w-full max-w-md pixel-box p-8 z-10 relative">
+        <button onclick="window.goBack()" class="back-btn">⬅ SALIR</button>
+        <h2 class="text-center text-[12px] mb-4 text-red-600 uppercase mt-6">REGLAS DEL JUEGO</h2>
+        <div id="instruction-content" class="text-[9px] leading-relaxed space-y-4 mb-8 text-gray-700"></div>
+        <button onclick="window.proceedAfterInstructions()" class="w-full py-4 bg-black text-white text-[10px] pixel-btn">ENTENDIDO</button>
+    </div>
+
+    <!-- LOBBY JUGADOR -->
+    <div id="player-lobby" class="hidden w-full max-w-sm pixel-box p-6 text-center z-10 relative">
+        <button onclick="window.goBack()" class="back-btn">⬅ SALIR</button>
+        <h2 class="text-[10px] mb-2 text-blue-700 mt-8">CÓDIGO DE SALA</h2>
+        <input type="text" id="join-code" maxlength="6" class="w-full p-3 mb-4 border-4 border-black text-center text-lg uppercase outline-none" placeholder="CÓDIGO">
+        <h2 class="text-[10px] mb-2 text-blue-700">TU NICKNAME</h2>
+        <input type="text" id="player-name" maxlength="10" class="w-full p-3 mb-6 border-4 border-black text-center text-base uppercase outline-none" placeholder="NOMBRE">
+        <div id="join-error" class="text-red-600 text-[7px] mb-4 hidden">SALA NO ENCONTRADA</div>
+        <button onclick="window.joinGame()" id="join-btn" class="w-full py-4 bg-orange-500 text-white text-[10px] pixel-btn">UNIRSE</button>
+    </div>
+
+    <!-- ESPERA JUGADOR -->
+    <div id="wait-screen" class="hidden w-full max-w-sm pixel-box p-10 text-center z-10">
+        <div class="flex flex-col items-center gap-6">
+            <i class="fas fa-running animate-bounce text-4xl text-green-600"></i>
+            <p id="wait-message" class="text-[10px] leading-loose text-center">ESPERANDO INICIO...</p>
+            
+            <!-- Posición Final -->
+            <div id="final-rank-display" class="hidden w-full bg-blue-800 text-white p-4 border-4 border-yellow-400 animate-pulse">
+                <p class="text-[10px] mb-2">TU POSICIÓN FINAL:</p>
+                <p id="rank-number" class="text-3xl font-bold text-yellow-400">#--</p>
+            </div>
+
+            <div class="mt-4 bg-black text-yellow-400 p-2 text-[8px] w-full text-center border-2 border-white">
+                PUNTAJE: <span id="player-score-wait" class="text-white text-lg block mt-2">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOBBY HOST -->
+    <div id="host-lobby-screen" class="hidden w-full max-w-5xl z-10 text-center flex flex-col items-center relative p-4">
+        <button onclick="window.goBack()" class="back-btn top-4 left-4 text-xs md:text-sm md:px-4 md:py-2">⬅ CERRAR SALA</button>
+        <h2 class="text-[10px] md:text-[14px] mb-4 text-white uppercase tracking-widest mt-8">CÓDIGO DE ACCESO:</h2>
+        <div class="pixel-box p-6 md:p-8 bg-black border-white mb-6">
+            <h1 id="big-room-code" class="big-code">------</h1>
+        </div>
+        <div class="w-full max-w-3xl pixel-box p-4 md:p-6 bg-gray-100 min-h-[150px] mb-6">
+            <p class="text-[10px] md:text-[12px] mb-4 text-gray-500 uppercase text-left font-bold">ATLETAS CONECTADOS (<span id="player-count">0</span>):</p>
+            <div id="player-list-lobby" class="flex flex-wrap justify-center gap-2 max-h-[200px] overflow-y-auto"></div>
+        </div>
+        <button onclick="window.nextQuestion()" class="px-8 py-4 md:px-10 md:py-5 bg-green-500 text-white text-[10px] md:text-[12px] pixel-btn">¡INICIAR EVALUACIÓN!</button>
+    </div>
+
+    <!-- VISTA HOST (JUEGO) RE-DISEÑADA -->
+    <div id="host-screen" class="hidden w-full max-w-7xl z-10 flex flex-col items-center p-2">
         
-        <!-- PANTALLA INICIO -->
-        <div id="start-screen" class="bg-gray-100 p-6 md:p-10 text-center pixel-box">
-            <div class="mb-6 flex flex-col items-center">
-                <!-- Icono Escuela Pixel Art -->
-                <div class="w-24 h-24 md:w-32 md:h-32 mb-6">
-                    <svg viewBox="0 0 24 24" class="pixel-svg w-full h-full">
-                        <path d="M2 12h20v10h-20z" fill="#fca5a5"/> 
-                        <path d="M2 12h20v-2h-2v-2h-2v-2h-2v-2h-8v2h-2v2h-2v2h-2v2h-2v2z" fill="#ef4444"/> 
-                        <rect x="10" y="4" width="4" height="4" fill="#fbbf24"/> 
-                        <rect x="11" y="5" width="2" height="2" fill="black"/> 
-                        <rect x="9" y="16" width="6" height="6" fill="#78350f"/> 
-                        <rect x="4" y="14" width="3" height="3" fill="#93c5fd"/> 
-                        <rect x="17" y="14" width="3" height="3" fill="#93c5fd"/> 
-                        <rect x="11.5" y="0" width="1" height="4" fill="#6b7280"/>
-                        <rect x="12.5" y="0" width="3" height="2" fill="#22c55e"/>
-                    </svg>
-                </div>
-
-                <h1 class="text-xl md:text-4xl text-indigo-900 leading-snug uppercase mb-2" style="text-shadow: 2px 2px 0px #a5b4fc;">Misión:<br>Online</h1>
-                
-                <!-- Estado del servidor -->
-                <div id="server-status" class="mt-2 text-[10px] md:text-xs text-gray-500 bg-white border border-gray-300 px-3 py-1">
-                    <i class="fas fa-wifi"></i> DESCONECTADO (Modo Local)
-                </div>
+        <!-- Header Info Grande -->
+        <div class="w-full flex justify-between items-end mb-4 border-b-4 border-white pb-4">
+            <div class="flex flex-col">
+                <span class="text-xs text-gray-400">CÓDIGO SALA</span>
+                <span id="game-room-code" class="text-yellow-400 text-2xl md:text-4xl font-bold tracking-widest">---</span>
             </div>
-
-            <div class="mb-6 max-w-sm mx-auto">
-                <label class="block text-[8px] md:text-[10px] text-gray-500 mb-2 uppercase tracking-widest">Tu Nombre de Agente</label>
-                <input type="text" id="player-name" maxlength="10" placeholder="NOMBRE" class="w-full p-4 text-center pixel-input text-sm md:text-base bg-gray-50">
-            </div>
-
-            <div class="max-w-sm mx-auto space-y-3">
-                <button onclick="startGame()" class="w-full py-4 bg-yellow-400 hover:bg-yellow-300 text-black text-xs md:text-sm pixel-btn font-bold animate-pulse">
-                    INSERT COIN (JUGAR)
-                </button>
-                
-                <!-- Botón Compartir -->
-                <button onclick="shareGame()" class="w-full py-2 bg-blue-500 hover:bg-blue-400 text-white text-[10px] md:text-xs pixel-btn flex items-center justify-center gap-2">
-                    <i class="fas fa-share-alt"></i> INVITAR A COMPAÑEROS
-                </button>
-                <p id="share-msg" class="text-[8px] text-green-600 mt-1 hidden">¡Link copiado! Mándalo por WhatsApp.</p>
+            <div class="flex flex-col items-end">
+                <span class="text-xs text-gray-400">PROGRESO</span>
+                <span id="q-counter" class="text-white text-xl md:text-3xl font-bold">PREGUNTA 1 DE --</span>
             </div>
         </div>
 
-        <!-- PANTALLA JUEGO -->
-        <div id="game-screen" class="hidden relative">
-            <div class="flex justify-between items-end mb-4 px-1">
-                <div class="bg-black text-white p-2 md:p-3 border-2 border-gray-500 shadow-md">
-                    <span class="text-[8px] md:text-[10px] text-green-400 block">SCORE</span>
-                    <span id="score-display" class="text-sm md:text-xl">00000</span>
-                </div>
-                <div class="bg-black text-white p-2 md:p-3 border-2 border-gray-500 shadow-md">
-                    <span id="progress-display" class="text-[10px] md:text-xs">1/31</span>
-                </div>
+        <!-- Timer Section (Gigante) -->
+        <div class="w-full mb-6">
+            <div class="flex justify-between items-center mb-1">
+                <span class="text-xs text-white uppercase animate-pulse">Tiempo para responder:</span>
+                <span id="host-timer-text" class="text-yellow-400 text-2xl md:text-3xl font-bold">0s</span>
             </div>
-
-            <div class="h-6 md:h-8 w-full bg-black border-4 border-black mb-6 md:mb-8 relative shadow-lg">
-                <div id="timer-bar" class="h-full bg-green-500 w-full border-r-4 border-white"></div>
-            </div>
-
-            <div class="bg-blue-600 p-6 md:p-10 text-center mb-6 md:mb-8 pixel-box border-4 border-black !text-white !bg-blue-600 shadow-xl relative">
-                <!-- Pines Decorativos -->
-                <div class="absolute -top-3 -left-3 w-6 h-6 md:w-8 md:h-8 bg-red-500 border-2 border-black"></div>
-                <div class="absolute -top-3 -right-3 w-6 h-6 md:w-8 md:h-8 bg-red-500 border-2 border-black"></div>
-
-                <div id="phase-badge" class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-black text-yellow-400 px-3 py-1 text-[8px] md:text-[10px] border border-white z-10 shadow-lg">FASE 1</div>
-                <h2 id="acronym-text" class="text-3xl md:text-6xl mt-4 mb-4 font-black leading-tight tracking-tighter" style="text-shadow: 4px 4px 0px #000;">SEP</h2>
-            </div>
-            
-            <!-- Grid Responsive: 1 columna en móvil, 2 en Tablet/PC -->
-            <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Botones inyectados por JS -->
+            <div id="timer-container" class="w-full h-8 md:h-10 border-4 border-white bg-gray-900 rounded-md">
+                <div id="timer-bar-fill"></div>
             </div>
         </div>
 
-        <!-- PANTALLA RESULTADO -->
-        <div id="result-screen" class="hidden bg-gray-100 p-6 md:p-10 text-center pixel-box">
-            <div class="w-20 h-20 md:w-24 md:h-24 mx-auto mb-4">
-                <svg viewBox="0 0 16 16" class="pixel-svg w-full h-full"><path d="M2 2h4v1h4v-1h4v4h-2v2h-1v2h-1v1h-4v-1h-1v-2h-1v-2h-2z" fill="#fbbf24"/><path d="M6 12h4v2h-4z" fill="#b45309"/><path d="M4 14h8v2h-8z" fill="#78350f"/><path d="M14 3h2v2h-2z M0 3h2v2h-2z" fill="#f59e0b"/></svg>
-            </div>
-            <h2 class="text-xl md:text-3xl text-red-600 mb-2 uppercase font-bold" style="text-shadow: 2px 2px 0 #000;">¡MISIÓN CUMPLIDA!</h2>
-            
-            <div class="my-6 py-6 bg-black text-white border-4 border-gray-700 relative overflow-hidden max-w-md mx-auto">
-                <div class="absolute inset-0 bg-green-900 opacity-20"></div>
-                <span class="text-[8px] md:text-[10px] text-gray-400 block mb-2 relative z-10 tracking-widest">TU PUNTAJE FINAL</span>
-                <span id="final-score" class="text-3xl md:text-5xl text-yellow-400 relative z-10 font-bold" style="text-shadow: 3px 3px 0 #b45309;">0</span>
-            </div>
-
-            <!-- LEADERBOARD EN TIEMPO REAL -->
-            <div class="text-left bg-blue-100 border-4 border-blue-300 p-4 mb-6 h-64 md:h-80 overflow-y-auto max-w-md mx-auto shadow-inner">
-                <p class="text-[10px] md:text-xs text-center mb-4 bg-white border border-black p-2 font-bold sticky top-0 z-20 shadow-md">🏆 CLASIFICACIÓN EN VIVO</p>
-                
-                <div id="loading-leaderboard" class="text-center py-6">
-                    <span class="loader"></span>
-                    <p class="text-[8px] mt-2">Sincronizando con el servidor...</p>
-                </div>
-                
-                <div id="leaderboard-list" class="space-y-3 text-[10px] md:text-xs">
-                    <!-- Aquí aparecen los compañeros -->
-                </div>
-            </div>
-
-            <button onclick="location.reload()" class="w-full max-w-md mx-auto block py-4 bg-green-500 hover:bg-green-400 text-white text-xs md:text-sm pixel-btn shadow-lg">VOLVER A JUGAR</button>
+        <!-- Caja de Pregunta -->
+        <div class="pixel-box w-full max-w-5xl p-6 md:p-10 mb-6 md:mb-8 text-center track-bg mx-auto shadow-2xl">
+            <h2 id="host-question" class="text-sm md:text-2xl lg:text-3xl text-white uppercase leading-snug drop-shadow-md font-bold">CARGANDO PREGUNTA...</h2>
+        </div>
+        
+        <!-- Opciones -->
+        <div id="host-options" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full max-w-6xl mx-auto"></div>
+        
+        <div class="mt-8">
+            <button onclick="window.showPodium()" class="px-8 py-3 bg-red-600 text-white text-xs md:text-sm pixel-btn border-2 border-white hover:bg-red-700">FINALIZAR JUEGO</button>
         </div>
     </div>
 
-    <!-- ------------------------------------------------------------------ -->
-    <!-- LÓGICA DE AUDIO (Música Generativa & SFX) -->
-    <!-- ------------------------------------------------------------------ -->
-    <script>
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        let audioCtx;
-        let isMuted = false;
-        let isMusicPlaying = false;
-        let musicInterval;
-        let noteIndex = 0;
+    <!-- BOTONERA JUGADOR -->
+    <div id="player-screen" class="hidden fixed inset-0 p-4 flex flex-col z-10 bg-[#1a1a1a]">
+        <div class="flex justify-between items-center mb-2">
+            <div class="text-[8px] text-white">PREGUNTA: <span id="player-q-counter">1/--</span></div>
+            <div class="bg-black border border-white px-3 py-1 text-yellow-400 text-[10px]">
+                PTS: <span id="player-score-game">0</span>
+            </div>
+        </div>
+        
+        <div class="player-timer-container mb-4 h-4 border-white">
+            <div id="player-timer-fill"></div>
+        </div>
+        
+        <div class="grid grid-cols-2 gap-4 flex-grow">
+            <button onclick="window.sendAnswer(0)" class="btn-red pixel-btn flex flex-col items-center justify-center h-full"><i class="fas fa-square text-4xl md:text-5xl mb-2"></i></button>
+            <button onclick="window.sendAnswer(1)" class="btn-blue pixel-btn flex flex-col items-center justify-center h-full"><i class="fas fa-caret-up text-5xl md:text-6xl mb-2"></i></button>
+            <button onclick="window.sendAnswer(2)" class="btn-yellow pixel-btn flex flex-col items-center justify-center h-full"><i class="fas fa-circle text-4xl md:text-5xl mb-2"></i></button>
+            <button onclick="window.sendAnswer(3)" class="btn-green pixel-btn flex flex-col items-center justify-center h-full"><i class="fas fa-play fa-rotate-270 text-4xl md:text-5xl mb-2"></i></button>
+        </div>
+    </div>
 
-        // Melodía "8-bit Hero"
-        const melody = [
-            261.63, 329.63, 392.00, 523.25, 392.00, 329.63, // C
-            293.66, 349.23, 440.00, 587.33, 440.00, 349.23  // D
-        ];
+    <!-- PODIO FINAL (HOST) -->
+    <div id="podium-screen" class="hidden w-full max-w-5xl z-10 text-center flex flex-col items-center justify-center p-4">
+        <h2 class="text-xl md:text-3xl text-yellow-400 mb-6 uppercase drop-shadow-md animate-bounce">🏆 CAMPEONES 🏆</h2>
+        
+        <div id="podium-container" class="flex items-end justify-center gap-2 md:gap-6 h-64 md:h-80 w-full mb-8"></div>
+        
+        <div class="w-full max-w-3xl bg-black bg-opacity-70 p-4 md:p-6 border-4 border-white rounded-lg mb-6">
+            <h3 class="text-white text-[12px] md:text-[16px] mb-4 uppercase border-b-2 border-white pb-2">Cuadro de Honor</h3>
+            <div id="honor-list" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left"></div>
+        </div>
+        
+        <button onclick="window.resetGame()" class="px-8 py-4 md:px-12 md:py-6 bg-white text-black text-[10px] md:text-[12px] pixel-btn border-4 border-yellow-500 hover:bg-yellow-100">NUEVA PARTIDA</button>
+    </div>
 
-        function initAudio() {
-            if (!audioCtx) audioCtx = new AudioContext();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-        }
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+        import { getFirestore, doc, setDoc, onSnapshot, updateDoc, collection, getDoc, increment } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
-        function playTone(freq, type, duration, vol = 0.1) {
-            if (isMuted || !audioCtx) return;
+        document.addEventListener('touchstart', (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+        
+        const firebaseConfig = JSON.parse(__firebase_config);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'agente-pe-coach-pro';
+        
+        let app, auth, db, user;
+        let myRole = '', myName = '', myScore = 0, currentCode = '';
+        let currentCorrect = -1, currentStartTime = 0, currentLimit = 0, hasAnswered = false;
+        let hostTimerInterval = null, playerTimerInterval = null;
+        let questionQueue = [];
+        let audioCtx = null, isMusicPlaying = false;
+        let currentQuestionNum = 0, totalQuestions = 0;
+        
+        const sessionID = crypto.randomUUID();
+
+        // Audio System
+        function playTone(freq, dur, type = 'square') {
+            if (!audioCtx || !isMusicPlaying) return;
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = type;
             osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(vol, audioCtx.currentTime + 0.01);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + duration);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + dur);
         }
 
-        function startMusic() {
-            if (!audioCtx) initAudio();
-            if (isMusicPlaying || isMuted) return;
-            
-            isMusicPlaying = true;
-            musicInterval = setInterval(() => {
-                if(!isMuted && isMusicPlaying) {
-                    const freq = melody[noteIndex % melody.length];
-                    playTone(freq, 'square', 0.15, 0.03); 
-                    noteIndex++;
-                }
-            }, 200);
+        let melodyInterval = null;
+        function startBackgroundMusic() {
+            if (melodyInterval) clearInterval(melodyInterval);
+            let noteIdx = 0;
+            const notes = [110, 0, 110, 0, 130, 0, 146, 0]; 
+            melodyInterval = setInterval(() => {
+                if(isMusicPlaying && notes[noteIdx] > 0) playTone(notes[noteIdx], 0.1, 'triangle');
+                noteIdx = (noteIdx + 1) % notes.length;
+            }, 250);
         }
 
-        function stopMusic() {
-            isMusicPlaying = false;
-            clearInterval(musicInterval);
-        }
-
-        function toggleAudio() {
-            isMuted = !isMuted;
-            const btn = document.getElementById('audio-btn');
-            
-            if(isMuted) {
-                btn.innerHTML = '<i class="fas fa-volume-mute text-red-400"></i> SONIDO: OFF';
-                stopMusic();
+        window.toggleMusic = () => {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            isMusicPlaying = !isMusicPlaying;
+            const btn = document.getElementById('music-btn');
+            if (isMusicPlaying) {
+                btn.innerText = "🔊 MÚSICA: ON"; btn.classList.add('bg-green-600'); btn.classList.remove('bg-gray-800');
+                startBackgroundMusic(); playTone(440, 0.2); 
             } else {
-                btn.innerHTML = '<i class="fas fa-volume-up text-green-400"></i> SONIDO: ON';
-                if (!document.getElementById('game-screen').classList.contains('hidden')) {
-                    startMusic();
-                }
+                btn.innerText = "🔇 MÚSICA: OFF"; btn.classList.add('bg-gray-800'); btn.classList.remove('bg-green-600');
+                if (melodyInterval) clearInterval(melodyInterval);
             }
-        }
-
-        function sfxSelect() { playTone(440, 'triangle', 0.1, 0.1); }
-        function sfxCorrect() { 
-            playTone(880, 'square', 0.1, 0.1); 
-            setTimeout(() => playTone(1760, 'square', 0.2, 0.1), 100); 
-        }
-        function sfxWrong() { playTone(150, 'sawtooth', 0.3, 0.2); }
-        function sfxWin() {
-            stopMusic(); 
-            [523, 659, 783, 1046, 783, 1046].forEach((f, i) => {
-                setTimeout(() => playTone(f, 'square', 0.3, 0.2), i * 150);
-            });
-        }
-    </script>
-    
-    <!-- ------------------------------------------------------------------ -->
-    <!-- LÓGICA DE FIREBASE -->
-    <!-- ------------------------------------------------------------------ -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, query, orderBy, limit, onSnapshot } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCnVM-XX6hjP4TA9hW0BdiYZaNx64XybMk",
-            authDomain: "retoeducativo-14ef9.firebaseapp.com",
-            projectId: "retoeducativo-14ef9",
-            storageBucket: "retoeducativo-14ef9.firebasestorage.app",
-            messagingSenderId: "618889780802",
-            appId: "1:618889780802:web:a9811f95c66645282517db"
         };
 
-        let db;
-        try {
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            const statusBadge = document.getElementById('server-status');
-            statusBadge.innerHTML = '<i class="fas fa-wifi text-green-500"></i> SERVIDOR CONECTADO';
-            statusBadge.classList.add('text-green-700', 'bg-green-50');
-            window.dbConnected = true;
-        } catch (e) {
-            console.error("Error conectando Firebase:", e);
-        }
-
-        window.saveScoreToCloud = async (name, score) => {
-            if (!window.dbConnected) return;
-            try {
-                await addDoc(collection(db, "puntajes"), { name: name, score: score, timestamp: new Date() });
-            } catch (e) { console.error("Error guardando score: ", e); }
-        };
-
-        window.listenToLeaderboard = () => {
-            if (!window.dbConnected) {
-                document.getElementById('loading-leaderboard').innerHTML = "<p class='text-red-500 text-[8px]'>⚠ Modo Local</p>";
-                return;
-            }
-            const q = query(collection(db, "puntajes"), orderBy("score", "desc"), limit(50));
-            onSnapshot(q, (snapshot) => {
-                const list = document.getElementById('leaderboard-list');
-                const loader = document.getElementById('loading-leaderboard');
-                if(loader) loader.style.display = 'none';
-                list.innerHTML = "";
-                let rank = 1;
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const row = document.createElement('div');
-                    row.className = "flex justify-between items-center border-b border-blue-200 pb-1";
-                    let color = "text-gray-600";
-                    let icon = "";
-                    if(rank === 1) { color = "text-yellow-600 font-bold"; icon = "👑"; }
-                    else if(rank === 2) { color = "text-gray-500 font-bold"; icon = "🥈"; }
-                    else if(rank === 3) { color = "text-orange-600 font-bold"; icon = "🥉"; }
-                    let bg = "";
-                    if(data.name === window.currentPlayerName && data.score === window.currentScore) {
-                        bg = "bg-yellow-100 px-1 rounded border border-yellow-300 animate-pulse";
-                    }
-                    row.innerHTML = `<span class="${color} ${bg}">${rank}. ${icon} ${data.name}</span><span class="${color}">${data.score}</span>`;
-                    list.appendChild(row);
-                    rank++;
-                });
-            });
-        };
-    </script>
-
-    <!-- ------------------------------------------------------------------ -->
-    <!-- LÓGICA DEL JUEGO -->
-    <!-- ------------------------------------------------------------------ -->
-    <script>
-        const database = [
-            { a: "SEP", c: "Secretaría de Educación Pública", w: ["Sistema de Evaluación Primaria", "Secretaría de Escuelas Profesionales"], t: 15, phase: "Básicos" },
-            { a: "NEM", c: "Nueva Escuela Mexicana", w: ["Núcleo Educativo Moderno", "Norma de Enseñanza de México"], t: 15, phase: "Básicos" },
-            { a: "LGE", c: "Ley General de Educación", w: ["Logros de Gestión Estudiantil", "Lineamientos de Grados Escolares"], t: 15, phase: "Básicos" },
-            { a: "INEGI", c: "Inst. Nacional de Estadística y Geografía", w: ["Inst. Nacional de Educación y Geografía", "Índice Nac. de Escuelas de Grado Inicial"], t: 15, phase: "Básicos" },
-            { a: "SNTE", c: "Sindicato Nacional de Trabajadores de la Edu.", w: ["Sistema Nacional de Técnicos Educativos", "Sociedad Nacional de Trabajo Escolar"], t: 15, phase: "Básicos" },
-            { a: "DOF", c: "Diario Oficial de la Federación", w: ["Documento Oficial de Formación", "Dirección Operativa de Fomento"], t: 15, phase: "Básicos" },
-            { a: "SEN", c: "Sistema Educativo Nacional", w: ["Servicio Escolar Nacional", "Secretaría de Evaluación Nacional"], t: 15, phase: "Básicos" },
-            { a: "CENEVAL", c: "Centro Nacional de Evaluación para la Edu. Sup.", w: ["Comité Nacional de Escuelas de Validez Local", "Central de Evaluación y Validación Académica"], t: 12, phase: "Evaluación" },
-            { a: "ENLACE", c: "Evaluación Nacional del Logro Académico", w: ["Estrategia de Lenguaje y Aprendizaje", "Escuela Nacional de Logros y Actividades"], t: 12, phase: "Evaluación" },
-            { a: "EXCALE", c: "Exámenes de la Calidad y el Logro Educativos", w: ["Examen de Competencias de Alumnos", "Evaluación de Calidad en el Aprendizaje"], t: 12, phase: "Evaluación" },
-            { a: "INEE", c: "Inst. Nacional para la Evaluación de la Edu.", w: ["Instancia Nacional de Estándares de Enseñanza", "Indicador Nacional de Excelencia Educativa"], t: 12, phase: "Evaluación" },
-            { a: "EXANI-I", c: "Examen Nac. de Ingreso a la Edu. Media Sup.", w: ["Evaluación Nacional de Idiomas e Inteligencia", "Examen de Aptitud de Nivel Inicial"], t: 12, phase: "Evaluación" },
-            { a: "NNA", c: "Niñas, Niños y Adolescentes", w: ["Núcleo Nacional de Aprendizaje", "Nivel de Nutrición y Aprendizaje"], t: 12, phase: "Evaluación" },
-            { a: "IES", c: "Instituciones de Educación Superior", w: ["Institutos de Enseñanza Secundaria", "Indicadores de Educación y Salud"], t: 12, phase: "Evaluación" },
-            { a: "LGSPD", c: "Ley General del Servicio Profesional Docente", w: ["Ley de Gestión Superior para Docentes", "Lineamiento General de Sistemas para Profesores"], t: 10, phase: "Marco Legal" },
-            { a: "SPD", c: "Servicio Profesional Docente", w: ["Sistema de Profesores Destacados", "Secretaría Profesional de Docencia"], t: 10, phase: "Marco Legal" },
-            { a: "CPEUM", c: "Constitución Política de los Estados Unidos Mex.", w: ["Consejo Político Educativo Único", "Comisión Para la Evaluación Única"], t: 10, phase: "Marco Legal" },
-            { a: "UNESCO", c: "Org. de las Naciones Unidas para la Edu., Ciencia y Cultura", w: ["Unión Nacional de Escuelas para la Ciencia", "Unidad Especial de Cultura y Organización"], t: 10, phase: "Internacional" },
-            { a: "OCDE", c: "Org. para la Cooperación y el Desarrollo Econ.", w: ["Oficina de Control de Desarrollo Educativo", "Orden de Calidad para el Desarrollo Estudiantil"], t: 10, phase: "Internacional" },
-            { a: "PISA", c: "Programa para la Eval. Internacional de Alumnos", w: ["Plan Internacional de Seguridad Académica", "Proyecto Integral de Saberes y Aprendizajes"], t: 10, phase: "Internacional" },
-            { a: "IEA", c: "Asociación Int. de Evaluación del Rendimiento", w: ["Instituto de Enseñanza Aplicada", "Agencia Internacional de Educación"], t: 10, phase: "Internacional" },
-            { a: "USICAMM", c: "Unidad del Sist. para la Carrera de las Maestras y Maestros", w: ["Unión de Sistemas de Capacitación", "Unidad de Servicios de Inteligencia Educativa"], t: 8, phase: "Gestión" },
-            { a: "PDA", c: "Proceso de Desarrollo del Aprendizaje", w: ["Plan de Desarrollo Académico", "Programa de Docentes en Acción"], t: 8, phase: "Gestión" },
-            { a: "ATP", c: "Asesores Técnicos Pedagógicos", w: ["Asociación de Técnicos y Profesores", "Apoyo Técnico Profesional"], t: 8, phase: "Gestión" },
-            { a: "AEF", c: "Autoridad Educativa Federal", w: ["Alianza de Escuelas Federales", "Academia de Educación y Formación"], t: 8, phase: "Gestión" },
-            { a: "PNEE", c: "Política Nacional de Evaluación Educativa", w: ["Programa Nacional de Escuelas de Excelencia", "Plan Nacional de Educación Especial"], t: 8, phase: "Gestión" },
-            { a: "AEE", c: "Áreas Estatales de Evaluación", w: ["Asociación de Estudiantes de Educación", "Alianza de Evaluación Externa"], t: 7, phase: "Técnico" },
-            { a: "DGE", c: "Dirección General de Evaluación", w: ["Dirección de Gestión Educativa", "Departamento de Grados Escolares"], t: 7, phase: "Técnico" },
-            { a: "DGEP", c: "Dirección Gral. de Evaluación de Políticas", w: ["Dirección de Gestión de Escuelas Públicas", "Departamento General de Educación Particular"], t: 7, phase: "Técnico" },
-            { a: "OAE", c: "Organismos de Apoyo a la Evaluación", w: ["Oficinas de Atención Escolar", "Ordenanza de Aprendizaje y Enseñanza"], t: 7, phase: "Técnico" }
+        const fullDatabase = [
+            { q: "¿QUÉ SIGNIFICA AEE?", c: "ÁREAS ESTATALES DE EVALUACIÓN", w: ["ADMINISTRACIÓN ESTATAL DE EDUCACIÓN", "ASOCIACIÓN DE ESTUDIOS EDUCATIVOS", "AGENCIA ESTATAL DE EVALUACIÓN"], t: 15, d: "MEDIO" },
+            { q: "¿QUÉ SIGNIFICA AEF?", c: "AUTORIDAD EDUCATIVA FEDERAL", w: ["ASOCIACIÓN DE EDUCACIÓN FEDERAL", "ÁREA DE EVALUACIÓN FEDERAL", "ADMINISTRACIÓN DE ENSEÑANZA FEDERAL"], t: 15, d: "MEDIO" },
+            { q: "¿QUÉ ES UN ATP?", c: "ASESOR TÉCNICO PEDAGÓGICO", w: ["AUXILIAR TÉCNICO PROFESIONAL", "ADMINISTRADOR TÉCNICO PEDAGÓGICO", "ASISTENTE TÉCNICO DE PLANEACIÓN"], t: 15, d: "MEDIO" },
+            { q: "¿QUÉ SIGNIFICA CENEVAL?", c: "CENTRO NACIONAL DE EVALUACIÓN PARA LA EDUCACIÓN SUPERIOR", w: ["CENTRO NACIONAL DE VALIDACIÓN DE ESTUDIOS SUPERIORES", "COMISIÓN DE EVALUACIÓN NACIONAL Y VALORACIÓN", "CONSEJO EDUCATIVO DE EVALUACIÓN Y LOGRO ACADÉMICO"], t: 20, d: "FÁCIL" },
+            { q: "¿QUÉ ES LA CPEUM?", c: "CONSTITUCIÓN POLÍTICA DE LOS ESTADOS UNIDOS MEXICANOS", w: ["COMISIÓN POLÍTICA DE EDUCACIÓN DE LOS ESTADOS UNIDOS MEXICANOS", "CONSEJO PARA LA EDUCACIÓN DE LA UNIÓN MEXICANA", "CARTA DE POLÍTICAS EDUCATIVAS UNIVERSALES DE MÉXICO"], t: 12, d: "DIFÍCIL" },
+            { q: "¿QUÉ SIGNIFICA DGE-SPEP?", c: "DIRECCIÓN GENERAL DE EVALUACIÓN", w: ["DIRECCIÓN GENERAL DE EDUCACIÓN SUPERIOR", "DEPARTAMENTO DE GESTIÓN Y EVALUACIÓN PÚBLICA", "DIRECCIÓN DE GESTIÓN EDUCATIVA Y POLÍTICAS"], t: 15, d: "MEDIO" },
+            { q: "¿QUÉ ES EL DOF?", c: "DIARIO OFICIAL DE LA FEDERACIÓN", w: ["DEPARTAMENTO DE ORGANIZACIÓN FEDERAL", "DOCUMENTO OFICIAL DE LA FEDERACIÓN", "DIRECCIÓN DE OFICINAS FEDERALES"], t: 15, d: "FÁCIL" },
+            { q: "¿QUÉ FUE LA PRUEBA ENLACE?", c: "EVALUACIÓN NACIONAL DEL LOGRO ACADÉMICO EN CENTROS ESCOLARES", w: ["EXAMEN NACIONAL DE LOGROS ACADÉMICOS Y CULTURALES ESCOLARES", "ESTUDIO NACIONAL DE LOGRO ESCOLAR Y APRENDIZAJE CENTRADO", "EVALUACIÓN DE NIVEL ACADÉMICO EN CENTROS EDUCATIVOS"], t: 15, d: "DIFÍCIL" },
+            { q: "¿QUÉ ES EL EXANI-I?", c: "EXAMEN NACIONAL DE INGRESO A LA EDUCACIÓN MEDIA SUPERIOR", w: ["EXAMEN DE ADMISIÓN NACIONAL E INGRESO SUPERIOR", "EVALUACIÓN DE INGRESO INICIAL A EDUCACIÓN MEDIA", "EXAMEN DE APTITUD DE NIVEL INTERMEDIO SUPERIOR"], t: 15, d: "MEDIO" },
+            { q: "¿QUÉ SIGNIFICA EXCALE?", c: "EXÁMENES DE LA CALIDAD Y EL LOGRO EDUCATIVOS", w: ["EVALUACIÓN POR CALIDAD EDUCATIVA Y LOGRO ESCOLAR", "EXAMEN DE CALIDAD LECTORA Y EDUCATIVA", "ESTUDIO DE CALIDAD Y LOGRO ESCOLAR AVANZADO"], t: 12, d: "DIFÍCIL" },
+            { q: "¿QUÉ SIGNIFICA IEA?", c: "ASOCIACIÓN INTERNACIONAL DE EVALUACIÓN", w: ["INSTITUTO DE EVALUACIÓN ACADÉMICA INTERNACIONAL", "INSTITUCIÓN DE ESTUDIOS AVANZADOS DE EVALUACIÓN", "INVESTIGACIÓN EDUCATIVA APLICADA INTERNACIONAL"], t: 15, d: "MEDIO" },
+            { q: "¿QUÉ SON LAS IES?", c: "INSTITUCIONES DE EDUCACIÓN SUPERIOR", w: ["INSTITUTOS DE EDUCACIÓN SECUNDARIA", "INICIATIVAS DE EDUCACIÓN SUPERIOR", "INVESTIGACIÓN Y ESTUDIOS SUPERIORES"], t: 15, d: "MEDIO" },
+            { q: "¿QUÉ ERA EL INEE?", c: "INSTITUTO NACIONAL PARA LA EVALUACIÓN DE LA EDUCACIÓN", w: ["INSTITUTO NACIONAL DE ESTUDIOS EDUCATIVOS Y EVALUACIÓN", "INSTITUCIÓN DE EVALUACIÓN ESCOLAR Y ESTADÍSTICA", "INICIATIVA NACIONAL DE EDUCACIÓN Y EVALUACIÓN"], t: 15, d: "MEDIO" },
+            { q: "¿QUÉ SIGNIFICA INEGI?", c: "INSTITUTO NACIONAL DE ESTADÍSTICA Y GEOGRAFÍA", w: ["INSTITUTO NACIONAL DE ESTUDIOS GEOGRÁFICOS E INFORMÁTICOS", "INSTITUCIÓN DE ESTADÍSTICA GUBERNAMENTAL E INFORMACIÓN", "INSTITUTO DE ECONOMÍA, GEOGRAFÍA E INFORMÁTICA"], t: 20, d: "FÁCIL" },
+            { q: "¿QUÉ ES LA LGE?", c: "LEY GENERAL DE EDUCACIÓN", w: ["LEY DE GESTIÓN ESCOLAR", "LINEAMIENTOS GENERALES EDUCATIVOS", "LEGISLACIÓN DE GOBIERNO EDUCATIVO"], t: 15, d: "FÁCIL" },
+            { q: "¿QUÉ SIGNIFICA OCDE?", c: "ORGANIZACIÓN PARA LA COOPERACIÓN Y EL DESARROLLO ECONÓMICOS", w: ["ORGANIZACIÓN DE COMERCIO Y DESARROLLO ECONÓMICO", "OFICINA DE COOPERACIÓN EDUCATIVA Y DESARROLLO", "ORGANISMO DE CONTROL Y DESARROLLO ECONÓMICO"], t: 20, d: "FÁCIL" },
+            { q: "¿QUÉ ES EL SNTE?", c: "SINDICATO NACIONAL DE TRABAJADORES DE LA EDUCACIÓN", w: ["SOCIEDAD NACIONAL DE TRABAJO ESCOLAR Y EDUCACIÓN", "SINDICATO NACIONAL DE TÉCNICOS DE LA EDUCACIÓN", "SISTEMA NACIONAL DE TRABAJADORES Y EDUCADORES"], t: 20, d: "FÁCIL" },
+            { q: "¿QUÉ SIGNIFICA UNESCO?", c: "ORG. DE LAS NACIONES UNIDAS PARA LA EDUCACIÓN, LA CIENCIA Y LA CULTURA", w: ["UNIÓN DE NACIONES PARA LA EDUCACIÓN SUPERIOR Y CULTURA", "UNIDAD DE ESTUDIOS CULTURALES, CIENTÍFICOS Y EDUCATIVOS", "ORGANIZACIÓN UNIVERSAL DE CULTURA, CIENCIA Y EDUCACIÓN"], t: 15, d: "DIFÍCIL" },
+            { q: "¿QUÉ ES PISA?", c: "PROGRAMA PARA LA EVALUACIÓN INTERNACIONAL DE LOS ALUMNOS", w: ["PROYECTO INTERNACIONAL DE SEGUIMIENTO AL ALUMNO", "PRUEBA INTERNACIONAL DE SABERES Y APRENDIZAJES", "PROGRAMA DE INVESTIGACIÓN SOBRE ALUMNOS"], t: 15, d: "MEDIO" },
+            { q: "¿QUÉ ES LA SEP?", c: "SECRETARÍA DE EDUCACIÓN PÚBLICA", w: ["SISTEMA DE EDUCACIÓN PRIMARIA", "SERVICIO DE EDUCACIÓN PÚBLICA", "SOCIEDAD EDUCATIVA PROFESIONAL"], t: 20, d: "FÁCIL" },
+            { q: "¿QUÉ ES EL SEN?", c: "SISTEMA EDUCATIVO NACIONAL", w: ["SERVICIO EDUCATIVO NACIONAL", "SECRETARÍA DE EDUCACIÓN NACIONAL", "SOCIEDAD DE ENSEÑANZA NACIONAL"], t: 15, d: "MEDIO" },
+            { q: "¿QUÉ SIGNIFICA NEM?", c: "NUEVA ESCUELA MEXICANA", w: ["NORMA DE EDUCACIÓN MEXICANA", "NUEVO ENFOQUE MAGISTERIAL", "NÚCLEO EDUCATIVO MODERNO"], t: 15, d: "MEDIO" },
+            { q: "¿QUÉ SIGNIFICA NNA?", c: "NIÑAS, NIÑOS Y ADOLESCENTES", w: ["NUEVOS NIÑOS Y ADOLESCENTES", "NORMA DE NIÑEZ Y ADOLESCENCIA", "NÚCLEO DE NIÑEZ Y APRENDIZAJE"], t: 15, d: "FÁCIL" },
+            { q: "¿QUÉ ES EL PDA?", c: "PROCESO DE DESARROLLO DEL APRENDIZAJE", w: ["PROGRAMA DE DESARROLLO ACADÉMICO", "PLAN DE APRENDIZAJE Y DESARROLLO", "PROYECTO DE DESEMPEÑO ACADÉMICO"], t: 15, d: "DIFÍCIL" },
+            { q: "¿QUÉ ES LA USICAMM?", c: "UNIDAD DEL SISTEMA PARA LA CARRERA DE LAS MAESTRAS Y MAESTROS", w: ["UNIDAD DE SERVICIOS E INTELIGENCIA PARA LA CARRERA MAGISTERIAL", "UNIÓN SINDICAL PARA LA CARRERA DE LAS MAESTRAS Y MAESTROS", "UNIDAD DE SUPERVISIÓN E INGRESO A LA CARRERA MAGISTERIAL"], t: 12, d: "DIFÍCIL" }
         ];
 
-        let state = { idx: 0, score: 0, timer: null, canClick: false, questions: [] };
-        window.currentPlayerName = "";
-        window.currentScore = 0;
+        async function init() {
+            try {
+                app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) await signInWithCustomToken(auth, __initial_auth_token);
+                else await signInAnonymously(auth);
+                onAuthStateChanged(auth, (u) => { if (u) { user = u; showScreen('role-screen'); } });
+            } catch (err) { console.error("Init Error:", err); }
+        }
 
-        function shareGame() {
-            const url = window.location.href;
-            navigator.clipboard.writeText(url).then(() => {
-                const msg = document.getElementById('share-msg');
-                msg.classList.remove('hidden');
-                setTimeout(() => msg.classList.add('hidden'), 3000);
+        function showScreen(id) {
+            document.querySelectorAll('body > div:not(.crt-overlay)').forEach(div => div.classList.add('hidden'));
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        window.goBack = () => { location.reload(); };
+        function shuffle(array) { return array.sort(() => Math.random() - 0.5); }
+
+        window.showInstructions = (role) => {
+            myRole = role;
+            const content = document.getElementById('instruction-content');
+            content.innerHTML = role === 'host' ? `<p>• COACH: Genera el código.</p><p>• Preguntas variadas y tiempo dinámico.</p>` : `<p>• ATLETA: Ingresa el código.</p><p>• ¡Tu barra de tiempo cambia de color!</p>`;
+            showScreen('instruction-screen');
+        };
+
+        window.proceedAfterInstructions = async () => {
+            if (myRole === 'host') {
+                currentCode = Array.from({length: 6}, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join('');
+                document.getElementById('big-room-code').innerText = currentCode;
+                document.getElementById('game-room-code').innerText = currentCode;
+                questionQueue = shuffle([...fullDatabase]);
+                totalQuestions = questionQueue.length;
+                showScreen('host-lobby-screen');
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gamerooms', currentCode), { status: 'lobby', ts: Date.now(), players: {}, totalQ: totalQuestions });
+                
+                onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'gamerooms', currentCode), (snap) => {
+                    if (!snap.exists()) return;
+                    const data = snap.data();
+                    if (data.status === 'lobby') {
+                        const lobbyList = document.getElementById('player-list-lobby');
+                        lobbyList.innerHTML = '';
+                        const players = Object.values(data.players || {});
+                        document.getElementById('player-count').innerText = players.length;
+                        players.forEach(p => { lobbyList.innerHTML += `<span class="player-badge uppercase">${p.name}</span>`; });
+                        if(isMusicPlaying) playTone(523, 0.1, 'sine');
+                    }
+                });
+            } else { showScreen('player-lobby'); }
+        };
+
+        window.nextQuestion = async () => {
+            if (myRole !== 'host') return;
+            if (questionQueue.length === 0) { window.showPodium(); return; }
+            
+            clearInterval(hostTimerInterval);
+            showScreen('host-screen');
+            playTone(660, 0.3, 'square'); 
+            
+            const item = questionQueue.shift();
+            currentQuestionNum = totalQuestions - questionQueue.length;
+            const options = shuffle([{ t: item.c, ok: true }, ...item.w.map(x => ({ t: x, ok: false }))]);
+            currentCorrect = options.findIndex(o => o.ok);
+
+            document.getElementById('q-counter').innerText = `PREGUNTA ${currentQuestionNum} DE ${totalQuestions}`;
+            document.getElementById('host-question').innerText = item.q;
+            const container = document.getElementById('host-options');
+            container.innerHTML = '';
+            const colors = ['btn-red', 'btn-blue', 'btn-yellow', 'btn-green'];
+            options.forEach((opt, i) => {
+                container.innerHTML += `<div class="${colors[i]} pixel-box p-4 md:p-6 text-white border-black flex items-center justify-center text-center h-auto min-h-[5rem] cursor-default"><span class="readable-font text-xs sm:text-sm md:text-xl lg:text-2xl leading-tight break-words hyphens-auto">${opt.t}</span></div>`;
             });
-        }
 
-        function startGame() {
-            const nameInput = document.getElementById('player-name');
-            const name = nameInput.value.trim().toUpperCase();
-            if(!name) { 
-                nameInput.classList.add('border-red-500', 'bg-red-50');
-                setTimeout(() => nameInput.classList.remove('border-red-500', 'bg-red-50'), 1000);
-                return; 
-            }
-            
-            initAudio(); 
-            sfxSelect();
-            if(!isMuted) startMusic(); 
-
-            window.currentPlayerName = name;
-            document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('game-screen').classList.remove('hidden');
-
-            state.questions = [...database].sort(() => Math.random() - 0.5);
-            state.idx = 0; state.score = 0;
-            updateScoreUI();
-            loadQuestion();
-        }
-
-        function loadQuestion() {
-            if(state.idx >= state.questions.length) { endGame(); return; }
-            
-            const q = state.questions[state.idx];
-            state.canClick = true;
-            
-            document.getElementById('progress-display').innerText = `${state.idx + 1}/${state.questions.length}`;
-            document.getElementById('acronym-text').innerText = q.a;
-
-            const opts = document.getElementById('options-container');
-            opts.innerHTML = '';
-            
-            let choices = [{t: q.c, ok: true}, ...q.w.map(x => ({t: x, ok: false}))].sort(() => Math.random() - 0.5);
-
-            choices.forEach(c => {
-                const btn = document.createElement('button');
-                // Clase responsiva: p-4 en móvil, p-6 en PC. justify-center para centrar texto verticalmente si es largo
-                btn.className = "w-full p-4 md:p-6 text-left bg-gray-100 hover:bg-white text-[10px] md:text-xs pixel-btn relative group transition-colors flex flex-col justify-center h-full";
-                btn.innerHTML = `<div class="flex items-start gap-2"><span class="text-gray-400 group-hover:text-black mt-1">></span> <span class="leading-relaxed">${c.t}</span></div>`;
-                btn.onclick = () => check(btn, c.ok);
-                opts.appendChild(btn);
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gamerooms', currentCode), { 
+                status: 'playing', correct: currentCorrect, ts: Date.now(), limit: item.t, qNum: currentQuestionNum, tQ: totalQuestions
             });
 
-            startTimer(q.t);
-        }
+            startHostTimer(item.t);
+        };
 
-        function startTimer(sec) {
-            clearInterval(state.timer);
-            const bar = document.getElementById('timer-bar');
-            bar.style.transition = 'none'; bar.style.width = '100%';
+        function startHostTimer(sec) {
+            let left = sec;
+            const bar = document.getElementById('timer-bar-fill');
+            const text = document.getElementById('host-timer-text');
+            bar.style.transition = 'none'; bar.style.width = '100%'; bar.className = 'timer-high';
             void bar.offsetWidth; 
-            bar.style.transition = `width ${sec}s linear`;
-            bar.style.width = '0%';
-            state.timer = setTimeout(() => timeUp(), sec * 1000);
+            bar.style.transition = `width ${sec}s linear`; bar.style.width = '0%';
+
+            hostTimerInterval = setInterval(async () => {
+                left--; text.innerText = Math.max(0, left) + 's';
+                const ratio = left / sec;
+                if (ratio <= 0.25) { bar.className = 'timer-low'; playTone(220, 0.1, 'sawtooth'); } 
+                else if (ratio <= 0.5) bar.className = 'timer-med';
+
+                if (left <= 0) {
+                    clearInterval(hostTimerInterval);
+                    await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gamerooms', currentCode), { status: 'timeout' });
+                    document.getElementById('host-question').innerText = "¡TIEMPO AGOTADO!";
+                    playTone(110, 0.5, 'sawtooth');
+                    setTimeout(() => window.nextQuestion(), 2000);
+                }
+            }, 1000);
         }
 
-        function check(btn, ok) {
-            if(!state.canClick) return;
-            state.canClick = false; clearInterval(state.timer);
-
-            const bar = document.getElementById('timer-bar');
-            const percentageLeft = (bar.offsetWidth / bar.parentElement.offsetWidth);
-
-            if(ok) {
-                sfxCorrect();
-                btn.classList.add('bg-green-500', 'text-white', 'border-green-800');
-                const timeBonus = Math.round(percentageLeft * 50); 
-                state.score += (100 + timeBonus);
-            } else {
-                sfxWrong();
-                btn.classList.add('bg-red-500', 'text-white', 'border-red-800');
-                btn.style.transform = "translateX(5px)";
-                setTimeout(()=> btn.style.transform = "translateX(-5px)", 50);
-                setTimeout(()=> btn.style.transform = "translateX(0px)", 100);
-            }
-            updateScoreUI();
-            setTimeout(() => { state.idx++; loadQuestion(); }, 1200);
-        }
-
-        function timeUp() {
-            if(!state.canClick) return;
-            state.canClick = false;
-            sfxWrong();
-            const currentQ = state.questions[state.idx];
-            document.querySelectorAll('#options-container button').forEach(b => {
-                if(b.innerText.includes(currentQ.c)) b.classList.add('bg-green-500', 'text-white');
-            });
-            setTimeout(() => { state.idx++; loadQuestion(); }, 1500);
-        }
-
-        function updateScoreUI() {
-            document.getElementById('score-display').innerText = state.score.toString().padStart(5, '0');
-        }
-
-        function endGame() {
-            sfxWin();
-            document.getElementById('game-screen').classList.add('hidden');
-            document.getElementById('result-screen').classList.remove('hidden');
-            document.getElementById('final-score').innerText = state.score;
+        // PLAYER LOGIC
+        window.joinGame = async () => {
+            const cin = document.getElementById('join-code').value.trim().toUpperCase();
+            const name = document.getElementById('player-name').value.trim().toUpperCase();
+            if (!cin || !name) return;
+            const btn = document.getElementById('join-btn');
+            btn.disabled = true; btn.innerText = "CONECTANDO...";
             
-            window.currentScore = state.score;
+            const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'gamerooms', cin);
+            try {
+                const roomSnap = await getDoc(roomRef);
+                if (!roomSnap.exists()) { document.getElementById('join-error').classList.remove('hidden'); btn.disabled = false; btn.innerText = "VINCULAR"; return; }
+                currentCode = cin; myName = name;
+                await updateDoc(roomRef, { [`players.${sessionID}`]: { name: myName, score: 0 } });
 
-            if(window.saveScoreToCloud) {
-                window.saveScoreToCloud(window.currentPlayerName, state.score);
-            }
-            if(window.listenToLeaderboard) {
-                window.listenToLeaderboard();
-            }
+                onSnapshot(roomRef, (snap) => {
+                    if (!snap.exists()) return;
+                    const s = snap.data();
+                    
+                    if (s.players && s.players[sessionID]) {
+                        const currentScore = s.players[sessionID].score;
+                        myScore = currentScore;
+                        document.getElementById('player-score-game').innerText = currentScore;
+                        document.getElementById('player-score-wait').innerText = currentScore;
+                    }
+
+                    if (s.status === 'playing' && s.ts !== currentStartTime) {
+                        currentStartTime = s.ts; currentCorrect = s.correct; currentLimit = s.limit;
+                        hasAnswered = false; showScreen('player-screen');
+                        document.getElementById('player-q-counter').innerText = `${s.qNum}/${s.tQ}`;
+                        startPlayerTimer(s.limit);
+                    } else if (s.status === 'timeout' && !hasAnswered) {
+                        hasAnswered = true; document.getElementById('wait-message').innerText = "¡TIEMPO AGOTADO!"; showScreen('wait-screen');
+                    } else if (s.status === 'finished') { 
+                        showFinalRank(s.players);
+                    }
+                });
+                showScreen('wait-screen');
+            } catch (error) { btn.disabled = false; btn.innerText = "ERROR"; }
+        };
+
+        function startPlayerTimer(sec) {
+            if(playerTimerInterval) clearInterval(playerTimerInterval);
+            const pBar = document.getElementById('player-timer-fill');
+            pBar.style.transition = 'none'; pBar.style.width = '100%'; pBar.className = 'timer-high';
+            void pBar.offsetWidth;
+            pBar.style.transition = `width ${sec}s linear`; pBar.style.width = '0%';
+            
+            let pLeft = sec;
+            playerTimerInterval = setInterval(() => {
+                pLeft--;
+                const pRatio = pLeft / sec;
+                if (pRatio <= 0.25) pBar.className = 'timer-low';
+                else if (pRatio <= 0.5) pBar.className = 'timer-med';
+                if(pLeft <= 0) clearInterval(playerTimerInterval);
+            }, 1000);
         }
+
+        window.sendAnswer = async (idx) => {
+            if (hasAnswered) return;
+            hasAnswered = true;
+            if (idx === currentCorrect) {
+                const elapsed = (Date.now() - currentStartTime) / 1000;
+                const bonus = Math.max(0, Math.floor((currentLimit - elapsed) * 20));
+                const points = 100 + bonus;
+                await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gamerooms', currentCode), { [`players.${sessionID}.score`]: increment(points) });
+                playTone(880, 0.1, 'triangle'); 
+            } else { playTone(150, 0.3, 'sawtooth'); }
+            showScreen('wait-screen');
+            document.getElementById('wait-message').innerText = "RESPUESTA REGISTRADA";
+        };
+
+        function showFinalRank(players) {
+            const data = Object.values(players || {}).sort((a, b) => b.score - a.score);
+            const myRank = data.findIndex(p => p.name === myName) + 1;
+            
+            document.getElementById('wait-message').innerText = "¡TORNEO FINALIZADO!";
+            const rankDiv = document.getElementById('final-rank-display');
+            rankDiv.classList.remove('hidden');
+            document.getElementById('rank-number').innerText = `#${myRank}`;
+            
+            showScreen('wait-screen');
+        }
+
+        window.showPodium = async () => {
+            clearInterval(hostTimerInterval);
+            if(melodyInterval) clearInterval(melodyInterval); 
+            await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gamerooms', currentCode), { status: 'finished' });
+            showScreen('podium-screen');
+            
+            for(let i=0; i<50; i++) {
+                const conf = document.createElement('div');
+                conf.className = 'confetti';
+                conf.style.left = Math.random() * 100 + 'vw';
+                conf.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 50%)`;
+                conf.style.animationDuration = Math.random() * 3 + 2 + 's';
+                document.body.appendChild(conf);
+            }
+
+            const roomSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'gamerooms', currentCode));
+            const playersMap = roomSnap.data().players || {};
+            const data = Object.values(playersMap);
+            data.sort((a, b) => b.score - a.score);
+            
+            // Top 3 Podium
+            const container = document.getElementById('podium-container');
+            container.innerHTML = '';
+            const positions = [{ idx: 1, class: 'podium-silver' }, { idx: 0, class: 'podium-gold' }, { idx: 2, class: 'podium-bronze' }];
+            positions.forEach(pos => {
+                const p = data[pos.idx];
+                if (p) {
+                    container.innerHTML += `
+                        <div class="podium-bar ${pos.class}">
+                            <div class="winner-name">
+                                <span class="block font-bold text-yellow-300 text-[8px] md:text-[10px]">${pos.idx === 0 ? '🏆' : ''} ${p.name}</span>
+                                <span class="block text-white text-[8px] md:text-[10px]">${p.score} PTS</span>
+                            </div>
+                            <span class="text-xl md:text-3xl text-black font-bold mb-2">${pos.idx + 1}</span>
+                        </div>`;
+                }
+            });
+
+            // Honor List (4-8)
+            const honorList = document.getElementById('honor-list');
+            honorList.innerHTML = '';
+            for(let i=3; i<8; i++) {
+                if(data[i]) {
+                    honorList.innerHTML += `
+                    <div class="honor-list-item">
+                        <span class="text-white">${i+1}. ${data[i].name}</span>
+                        <span class="text-yellow-400">${data[i].score}</span>
+                    </div>`;
+                }
+            }
+        };
+
+        window.resetGame = () => location.reload();
+        window.onload = init;
     </script>
-    <script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js')
-      .then(() => console.log("¡App lista para usar offline!"))
-      .catch((err) => console.log("Fallo el registro", err));
-  }
-</script>
 </body>
-
 </html>
-
